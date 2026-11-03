@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AnswerSchema, JobSchema, ResumeSchema } from "@/lib/schema";
-import { aiConfigured } from "@/lib/server/ai";
+import { AI_NOT_CONFIGURED, aiConfigured } from "@/lib/server/ai";
 import { MAX_TEXT_CHARS } from "@/lib/server/extract";
 import { jsonError, limitAI, readJson, toUserError } from "@/lib/server/http";
 import { runPipeline } from "@/lib/server/pipeline";
@@ -23,7 +23,7 @@ const Body = z.object({
  *   {"type":"result","data":{...}}  or  {"type":"error","error":"..."}
  */
 export async function POST(req: Request) {
-  if (!aiConfigured()) return jsonError("AI is not configured on the server. Set OPENAI_API_KEY in .env.local.", 503);
+  if (!aiConfigured()) return jsonError(AI_NOT_CONFIGURED, 503);
   const limited = limitAI(req);
   if (limited) return limited;
 

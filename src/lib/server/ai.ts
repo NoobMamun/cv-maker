@@ -9,12 +9,15 @@ import type { z } from "zod";
 
 let client: OpenAI | null = null;
 
+export const AI_NOT_CONFIGURED =
+  "AI is not configured: the OPENAI_API_KEY environment variable is missing. Locally, add it to .env.local and restart the server. On Vercel, add it under Project Settings → Environment Variables and redeploy.";
+
 export class AIConfigError extends Error {}
 export class AIResponseError extends Error {}
 
 function getClient(): OpenAI {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new AIConfigError("OPENAI_API_KEY is not set on the server.");
+  if (!apiKey) throw new AIConfigError(AI_NOT_CONFIGURED);
   client ??= new OpenAI({ apiKey, timeout: 120_000, maxRetries: 2 });
   return client;
 }

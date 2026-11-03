@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import type { z } from "zod";
-import { AIConfigError, AIResponseError } from "./ai";
+import { AI_NOT_CONFIGURED, AIConfigError, AIResponseError } from "./ai";
 import { ParseError } from "./extract";
 import { clientKey, rateLimit } from "./rate-limit";
 
@@ -12,7 +12,7 @@ export function jsonError(message: string, status = 400) {
 /** Map internal errors to safe user-facing messages. Never leak stack traces or CV contents. */
 export function toUserError(err: unknown): { message: string; status: number } {
   if (err instanceof ParseError) return { message: err.message, status: err.status };
-  if (err instanceof AIConfigError) return { message: "AI is not configured on the server. Set OPENAI_API_KEY.", status: 503 };
+  if (err instanceof AIConfigError) return { message: AI_NOT_CONFIGURED, status: 503 };
   if (err instanceof AIResponseError) return { message: err.message, status: 502 };
   const e = err as { status?: number; name?: string; message?: string };
   if (e?.name === "AbortError") return { message: "Request cancelled.", status: 499 };
