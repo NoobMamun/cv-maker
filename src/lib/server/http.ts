@@ -14,8 +14,14 @@ export function toUserError(err: unknown): { message: string; status: number } {
   if (err instanceof ParseError) return { message: err.message, status: err.status };
   if (err instanceof AIConfigError) return { message: AI_NOT_CONFIGURED, status: 503 };
   if (err instanceof AIResponseError) return { message: err.message, status: 502 };
-  const e = err as { status?: number; name?: string; message?: string };
+  const e = err as { status?: number; name?: string; message?: string; code?: string; type?: string };
   if (e?.name === "AbortError") return { message: "Request cancelled.", status: 499 };
+  if (e?.code === "insufficient_quota" || e?.code === "credit_balance_exhausted" || e?.type === "insufficient_quota") {
+    return {
+      message: "The OpenAI account behind this site has no credits left. Add credits at platform.openai.com/settings/organization/billing, then try again.",
+      status: 503,
+    };
+  }
   if (e?.status === 429) return { message: "The AI provider is busy or the quota is exhausted. Please try again shortly.", status: 429 };
   if (e?.status === 401) return { message: "The server's AI API key was rejected.", status: 503 };
   if (typeof e?.status === "number") return { message: "The AI provider returned an error. Please try again.", status: 502 };
