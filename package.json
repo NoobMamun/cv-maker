@@ -11,6 +11,7 @@
     "test": "tsx --test tests/*.test.ts tests/*.test.tsx"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0",
     "@react-pdf/renderer": "^4.9.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
@@ -20,7 +21,6 @@
     "lucide-react": "^1.67.0",
     "mammoth": "^1.13.0",
     "next": "^16.4.4",
-    "openai": "^7.47.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "server-only": "^0.0.1",

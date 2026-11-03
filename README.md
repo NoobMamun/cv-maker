@@ -6,11 +6,11 @@ AI-powered CV tailoring. Upload a CV (PDF/DOCX) and a job description. CV Tailor
 
 ```bash
 npm install
-cp .env.example .env.local   # then set OPENAI_API_KEY
+cp .env.example .env.local   # then set ANTHROPIC_API_KEY
 npm run dev                  # http://localhost:3000
 ```
 
-Only `OPENAI_API_KEY` is required. Without Supabase the app runs in **guest mode**: nothing is stored on the server, and work in progress lives in the browser tab's `sessionStorage`.
+Only `ANTHROPIC_API_KEY` (a Claude API key from https://platform.claude.com) is required. The default model is Claude Opus 5.5 (`claude-opus-5-5`); override it with `ANTHROPIC_MODEL`. Without Supabase the app runs in **guest mode**: nothing is stored on the server, and work in progress lives in the browser tab's `sessionStorage`.
 
 ### Enabling accounts and saved versions (Supabase)
 
@@ -98,5 +98,5 @@ The structure is built for the planned features:
 
 - **Multiple versions and application history.** `tailored_cvs` already stores one row per application with the job, analysis and answers.
 - **Cover letters, interview prep, LinkedIn optimisation.** Add a prompt in `lib/server/prompts.ts` and a route that reuses the extracted `original` + `job`. `tailored_cvs.kind` is reserved for non-CV documents.
-- **Other LLM providers.** All AI calls go through `completeJSON()` in `lib/server/ai.ts`.
+- **Model or provider changes.** All AI calls go through `completeJSON()` in `lib/server/ai.ts`. Each step sets its own effort level (`low` for extraction, `medium` for analysis and writing). Server-side refusal fallbacks (`fallbacks: "default"`) retry on another model if a safety classifier wrongly declines a CV.
 - **Bangla.** `tailored_cvs.language` is reserved. The PDF exporter uses the built-in Latin fonts, so register a Bangla-capable font with `Font.register()` in `lib/export/pdf.tsx` and add a language instruction to the prompts. DOCX and the HTML preview already handle Unicode.

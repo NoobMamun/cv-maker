@@ -74,10 +74,10 @@ export async function runPipeline(opts: {
   const [original, job] = await Promise.all([
     opts.original
       ? Promise.resolve(opts.original)
-      : completeJSON({ system: EXTRACT_CV_SYSTEM, user: `<cv>\n${cvText}\n</cv>`, schema: loose, signal }).then(withIds),
+      : completeJSON({ system: EXTRACT_CV_SYSTEM, user: `<cv>\n${cvText}\n</cv>`, schema: loose, effort: "low", signal }).then(withIds),
     opts.job
       ? Promise.resolve(opts.job)
-      : completeJSON({ system: EXTRACT_JOB_SYSTEM, user: `<job>\n${jdText}\n</job>`, schema: JobSchema, signal }),
+      : completeJSON({ system: EXTRACT_JOB_SYSTEM, user: `<job>\n${jdText}\n</job>`, schema: JobSchema, effort: "low", signal }),
   ]);
 
   if (!original.experience.length && !original.education.length && !original.skills.length) {
